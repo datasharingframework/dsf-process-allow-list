@@ -21,9 +21,9 @@
   <baseDefinition value="http://dsf.dev/fhir/StructureDefinition/task-base" />
   <derivation value="constraint" />
   <differential>
-    <element id="Task.instantiatesUri">
-      <path value="Task.instantiatesUri" />
-      <fixedUri value="http://dsf.dev/bpe/Process/updateAllowList/#{version}" />
+    <element id="Task.instantiatesCanonical">
+      <path value="Task.instantiatesCanonical" />
+      <fixedCanonical value="http://dsf.dev/bpe/Process/updateAllowList|#{version}" />
     </element>
     <element id="Task.input">
       <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
@@ -63,7 +63,7 @@
           <valueString value="TaskOutputParameterType" />
         </extension>
         <strength value="required" />
-        <valueSet value="http://dsf.dev/fhir/ValueSet/update-allow-list|#{version}" />
+        <valueSet value="http://dsf.dev/fhir/ValueSet/allow-list|#{version}" />
       </binding>
     </element>
     <element id="Task.output:allowList.type.coding">
@@ -74,7 +74,7 @@
     <element id="Task.output:allowList.type.coding.system">
       <path value="Task.output.type.coding.system" />
       <min value="1" />
-      <fixedUri value="http://dsf.dev/fhir/CodeSystem/update-allow-list" />
+      <fixedUri value="http://dsf.dev/fhir/CodeSystem/allow-list" />
     </element>
     <element id="Task.output:allowList.type.coding.code">
       <path value="Task.output.type.coding.code" />

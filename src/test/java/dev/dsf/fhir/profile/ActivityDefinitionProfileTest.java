@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.ValidationResult;
-import dev.dsf.bpe.UpdateAllowListProcessPluginDefinition;
+import dev.dsf.bpe.AllowListProcessPluginDefinition;
 import dev.dsf.fhir.authorization.process.ProcessAuthorizationHelper;
 import dev.dsf.fhir.authorization.process.ProcessAuthorizationHelperImpl;
 import dev.dsf.fhir.validation.ResourceValidator;
@@ -27,7 +27,7 @@ public class ActivityDefinitionProfileTest
 
 	@ClassRule
 	public static final ValidationSupportRule validationRule = new ValidationSupportRule(
-			UpdateAllowListProcessPluginDefinition.VERSION, UpdateAllowListProcessPluginDefinition.RELEASE_DATE,
+			AllowListProcessPluginDefinition.VERSION, AllowListProcessPluginDefinition.RELEASE_DATE,
 			Arrays.asList("dsf-activity-definition-0.5.0.xml", "dsf-extension-process-authorization-0.5.0.xml",
 					"dsf-extension-process-authorization-consortium-role-0.5.0.xml",
 					"dsf-extension-process-authorization-organization-0.5.0.xml",
