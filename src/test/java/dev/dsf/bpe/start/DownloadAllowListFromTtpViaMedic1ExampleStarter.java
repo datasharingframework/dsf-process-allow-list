@@ -24,7 +24,7 @@ public class DownloadAllowListFromTtpViaMedic1ExampleStarter
 	private static final Logger logger = LoggerFactory.getLogger(DownloadAllowListFromTtpViaMedic1ExampleStarter.class);
 
 	private static final String ALLOW_LIST_FHIR_BASE_URL = ConstantsExampleStarters.TTP_FHIR_BASE_URL;
-	private static final Map<String, String> REQUESTER_RECIPIENT = Map.of(
+	private static final Map<String, String> MEDIC_IDENTIFIER_URL = Map.of(
 			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_1,
 			ConstantsExampleStarters.MEDIC_1_FHIR_BASE_URL,
 			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_2,
@@ -39,10 +39,10 @@ public class DownloadAllowListFromTtpViaMedic1ExampleStarter
 	public static void main(String[] args) throws Exception
 	{
 		ExampleStarter starter = ExampleStarter.forServer(args,
-				REQUESTER_RECIPIENT.entrySet().iterator().next().getValue());
+				MEDIC_IDENTIFIER_URL.entrySet().iterator().next().getValue());
 		IdType allowList = allowList(starter);
 
-		REQUESTER_RECIPIENT.forEach((identifier, url) -> start(args, allowList, identifier, url));
+		MEDIC_IDENTIFIER_URL.forEach((identifier, url) -> start(args, allowList, identifier, url));
 	}
 
 	private static void start(String[] args, IdType allowList, String identifier, String url)
