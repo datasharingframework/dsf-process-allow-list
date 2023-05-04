@@ -10,6 +10,8 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dev.dsf.bpe.AllowListProcessPluginDefinition;
 import dev.dsf.bpe.ConstantsAllowList;
@@ -19,9 +21,16 @@ import dev.dsf.fhir.client.FhirWebserviceClient;
 
 public class DownloadAllowListFromTtpViaMedic1ExampleStarter
 {
-	private static final String REQUESTER_FHIR_BASE_URL = ConstantsExampleStarters.MEDIC_1_FHIR_BASE_URL;
-	private static final String REQUESTER_RECIPIENT = ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_1;
+	private static final Logger logger = LoggerFactory.getLogger(DownloadAllowListFromTtpViaMedic1ExampleStarter.class);
+
 	private static final String ALLOW_LIST_FHIR_BASE_URL = ConstantsExampleStarters.TTP_FHIR_BASE_URL;
+	private static final Map<String, String> REQUESTER_RECIPIENT = Map.of(
+			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_1,
+			ConstantsExampleStarters.MEDIC_1_FHIR_BASE_URL,
+			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_2,
+			ConstantsExampleStarters.MEDIC_2_FHIR_BASE_URL,
+			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_3,
+			ConstantsExampleStarters.MEDIC_3_FHIR_BASE_URL);
 
 	// Environment variable "DSF_CLIENT_CERTIFICATE_PATH" or args[0]: the path to the client-certificate
 	// dsf/dsf-tools/dsf-tools-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.p12
@@ -29,15 +38,28 @@ public class DownloadAllowListFromTtpViaMedic1ExampleStarter
 	// password
 	public static void main(String[] args) throws Exception
 	{
-		ExampleStarter starter = ExampleStarter.forServer(args, REQUESTER_FHIR_BASE_URL);
+		ExampleStarter starter = ExampleStarter.forServer(args,
+				REQUESTER_RECIPIENT.entrySet().iterator().next().getValue());
+		IdType allowList = allowList(starter);
 
-		Bundle allowList = allowList(starter);
-		Task task = task(allowList);
-
-		starter.startWith(task);
+		REQUESTER_RECIPIENT.forEach((identifier, url) -> start(args, allowList, identifier, url));
 	}
 
-	private static Task task(Bundle allowList)
+	private static void start(String[] args, IdType allowList, String identifier, String url)
+	{
+		try
+		{
+			Task task = task(identifier, allowList);
+			ExampleStarter.forServer(args, url).startWith(task);
+		}
+		catch (Exception exception)
+		{
+			logger.error("Could not start download allow-list with url '{}' in organization {} with base-url '{}' - {}",
+					allowList.getValue(), identifier, url, exception.getMessage());
+		}
+	}
+
+	private static Task task(String requesterRecipientIdentifierValue, IdType allowList)
 	{
 		var def = new AllowListProcessPluginDefinition();
 
@@ -50,22 +72,22 @@ public class DownloadAllowListFromTtpViaMedic1ExampleStarter
 		task.setIntent(Task.TaskIntent.ORDER);
 		task.setAuthoredOn(new Date());
 		task.getRequester().setType(ResourceType.Organization.name())
-				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue(REQUESTER_RECIPIENT));
+				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue(requesterRecipientIdentifierValue));
 		task.getRestriction().addRecipient().setType(ResourceType.Organization.name())
-				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue(REQUESTER_RECIPIENT));
+				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue(requesterRecipientIdentifierValue));
 
 		task.addInput().setValue(new StringType(ConstantsAllowList.PROFILE_DSF_TASK_DOWNLOAD_ALLOW_LIST_MESSAGE_NAME))
 				.getType().addCoding(CodeSystems.BpmnMessage.messageName());
 		task.addInput()
 				.setValue(new Reference(new IdType(ALLOW_LIST_FHIR_BASE_URL, ResourceType.Bundle.name(),
-						allowList.getIdElement().getIdPart(), allowList.getIdElement().getVersionIdPart())))
+						allowList.getIdPart(), allowList.getVersionIdPart())))
 				.getType().addCoding().setSystem(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST)
 				.setCode(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST);
 
 		return task;
 	}
 
-	private static Bundle allowList(ExampleStarter starter) throws Exception
+	private static IdType allowList(ExampleStarter starter) throws Exception
 	{
 		FhirWebserviceClient client = starter.createClient(ALLOW_LIST_FHIR_BASE_URL);
 		Bundle searchResult = client.searchWithStrictHandling(Bundle.class, Map.of("identifier",
@@ -74,6 +96,6 @@ public class DownloadAllowListFromTtpViaMedic1ExampleStarter
 		if (searchResult.getTotal() != 1 && searchResult.getEntryFirstRep().getResource() instanceof Bundle)
 			throw new IllegalStateException("Expected a single allow list Bundle");
 
-		return (Bundle) searchResult.getEntryFirstRep().getResource();
+		return searchResult.getEntryFirstRep().getResource().getIdElement();
 	}
 }
