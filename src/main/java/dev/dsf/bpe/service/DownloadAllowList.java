@@ -76,8 +76,8 @@ public class DownloadAllowList extends AbstractServiceDelegate
 	private IdType getBundleId(Task task)
 	{
 		List<Reference> bundleReferences = api.getTaskHelper()
-				.getInputParameterReferenceValues(task, ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST,
-						ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST)
+				.getInputParameterValues(task, ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST,
+						ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST, Reference.class)
 				.toList();
 
 		if (bundleReferences.size() != 1)
