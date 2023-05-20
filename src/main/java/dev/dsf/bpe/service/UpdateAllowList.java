@@ -22,36 +22,33 @@ import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
-import dev.dsf.bpe.ConstantsBase;
-import dev.dsf.bpe.ConstantsUpdateAllowList;
-import dev.dsf.bpe.delegate.AbstractServiceDelegate;
-import dev.dsf.fhir.authorization.read.ReadAccessHelper;
+import dev.dsf.bpe.ConstantsAllowList;
+import dev.dsf.bpe.v1.ProcessPluginApi;
+import dev.dsf.bpe.v1.activity.AbstractServiceDelegate;
+import dev.dsf.bpe.v1.constants.NamingSystems;
+import dev.dsf.bpe.v1.variables.Variables;
 import dev.dsf.fhir.client.FhirWebserviceClient;
-import dev.dsf.fhir.client.FhirWebserviceClientProvider;
-import dev.dsf.fhir.task.TaskHelper;
 
-public class UpdateAllowList extends AbstractServiceDelegate implements InitializingBean
+public class UpdateAllowList extends AbstractServiceDelegate
 {
 	private static final Logger logger = LoggerFactory.getLogger(UpdateAllowList.class);
 
-	public UpdateAllowList(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper)
+	public UpdateAllowList(ProcessPluginApi api)
 	{
-		super(clientProvider, taskHelper, readAccessHelper);
+		super(api);
 	}
 
 	@Override
-	public void doExecute(DelegateExecution execution) throws Exception
+	public void doExecute(DelegateExecution execution, Variables variables) throws Exception
 	{
-		FhirWebserviceClient client = getFhirWebserviceClientProvider().getLocalWebserviceClient();
+		FhirWebserviceClient client = api.getFhirWebserviceClientProvider().getLocalWebserviceClient();
 
 		Bundle searchSet = client.searchWithStrictHandling(Organization.class,
 				Map.of("active", Collections.singletonList("true"), "identifier",
-						Collections.singletonList(ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER + "|"),
-						"_include", Collections.singletonList("Organization:endpoint"), "_revinclude",
+						Collections.singletonList(NamingSystems.OrganizationIdentifier.SID + "|"), "_include",
+						Collections.singletonList("Organization:endpoint"), "_revinclude",
 						Collections.singletonList("OrganizationAffiliation:participating-organization")));
 
 		Map<String, String> identifierByTypeAndId = searchSet.getEntry().stream()
@@ -68,10 +65,10 @@ public class UpdateAllowList extends AbstractServiceDelegate implements Initiali
 
 		Bundle transaction = new Bundle().setType(BundleType.TRANSACTION);
 
-		getReadAccessHelper().addAll(transaction);
+		api.getReadAccessHelper().addAll(transaction);
 
-		transaction.getIdentifier().setSystem(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST)
-				.setValue(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST_VALUE_ALLOW_LIST);
+		transaction.getIdentifier().setSystem(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST)
+				.setValue(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST);
 
 		List<BundleEntryComponent> entries = searchSet.getEntry().stream().filter(BundleEntryComponent::hasResource)
 				.map(BundleEntryComponent::getResource)
@@ -84,29 +81,29 @@ public class UpdateAllowList extends AbstractServiceDelegate implements Initiali
 				FhirContext.forR4().newJsonParser().encodeResourceToString(transaction));
 
 		IdType result = client.withMinimalReturn().updateConditionaly(transaction,
-				Map.of("identifier", Collections.singletonList(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST
-						+ "|" + ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST_VALUE_ALLOW_LIST)));
+				Map.of("identifier", Collections.singletonList(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST + "|"
+						+ ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST)));
 
-		Task task = getLeadingTaskFromExecutionVariables(execution);
+		Task task = variables.getStartTask();
 		task.addOutput().setValue(new Reference(new IdType("Bundle", result.getIdPart(), result.getVersionIdPart())))
-				.getType().addCoding().setSystem(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST)
-				.setCode(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST_VALUE_ALLOW_LIST);
+				.getType().addCoding().setSystem(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST)
+				.setCode(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST);
 	}
 
 	private String getIdentifierValue(Resource resource)
 	{
 		if (resource instanceof Organization)
 			return ((Organization) resource).getIdentifier().stream().filter(Identifier::hasSystem)
-					.filter(i -> ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
-					.findFirst().filter(Identifier::hasValue).map(Identifier::getValue)
+					.filter(i -> NamingSystems.OrganizationIdentifier.SID.equals(i.getSystem())).findFirst()
+					.filter(Identifier::hasValue).map(Identifier::getValue)
 					.orElseThrow(() -> new RuntimeException("Organization is missing identifier value with system "
-							+ ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER));
+							+ NamingSystems.OrganizationIdentifier.SID));
 		else if (resource instanceof Endpoint)
 			return ((Endpoint) resource).getIdentifier().stream().filter(Identifier::hasSystem)
-					.filter(i -> ConstantsBase.NAMINGSYSTEM_DSF_ENDPOINT_IDENTIFIER.equals(i.getSystem())).findFirst()
+					.filter(i -> NamingSystems.EndpointIdentifier.SID.equals(i.getSystem())).findFirst()
 					.filter(Identifier::hasValue).map(Identifier::getValue)
 					.orElseThrow(() -> new RuntimeException("Endpoint is missing identifier value with system "
-							+ ConstantsBase.NAMINGSYSTEM_DSF_ENDPOINT_IDENTIFIER));
+							+ NamingSystems.EndpointIdentifier.SID));
 		else
 			throw new IllegalStateException("Organization or Endpoint expected");
 	}
@@ -150,8 +147,8 @@ public class UpdateAllowList extends AbstractServiceDelegate implements Initiali
 		BundleEntryComponent entry = new BundleEntryComponent();
 		entry.setFullUrl(uuid);
 		entry.setResource(organization);
-		entry.getRequest().setMethod(HTTPVerb.PUT).setUrl("Organization?identifier="
-				+ ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER + "|" + organizationIdentifier);
+		entry.getRequest().setMethod(HTTPVerb.PUT).setUrl(
+				"Organization?identifier=" + NamingSystems.OrganizationIdentifier.SID + "|" + organizationIdentifier);
 		return entry;
 	}
 
@@ -174,8 +171,8 @@ public class UpdateAllowList extends AbstractServiceDelegate implements Initiali
 		BundleEntryComponent entry = new BundleEntryComponent();
 		entry.setFullUrl(uuid);
 		entry.setResource(endpoint);
-		entry.getRequest().setMethod(HTTPVerb.PUT).setUrl(
-				"Endpoint?identifier=" + ConstantsBase.NAMINGSYSTEM_DSF_ENDPOINT_IDENTIFIER + "|" + endpointIdentifier);
+		entry.getRequest().setMethod(HTTPVerb.PUT)
+				.setUrl("Endpoint?identifier=" + NamingSystems.EndpointIdentifier.SID + "|" + endpointIdentifier);
 		return entry;
 	}
 
@@ -225,10 +222,11 @@ public class UpdateAllowList extends AbstractServiceDelegate implements Initiali
 		BundleEntryComponent entry = new BundleEntryComponent();
 		entry.setFullUrl(uuid);
 		entry.setResource(affiliation);
-		entry.getRequest().setMethod(HTTPVerb.PUT).setUrl("OrganizationAffiliation?primary-organization:identifier="
-				+ ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER + "|" + primaryOrganizatioIdentifier
-				+ "&participating-organization:identifier=" + ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER
-				+ "|" + participatingOrganizationIdentifier);
+		entry.getRequest().setMethod(HTTPVerb.PUT)
+				.setUrl("OrganizationAffiliation?primary-organization:identifier="
+						+ NamingSystems.OrganizationIdentifier.SID + "|" + primaryOrganizatioIdentifier
+						+ "&participating-organization:identifier=" + NamingSystems.OrganizationIdentifier.SID + "|"
+						+ participatingOrganizationIdentifier);
 		return entry;
 	}
 }

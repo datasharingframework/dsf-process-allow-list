@@ -5,22 +5,22 @@
 			<code value="ALL" />
 		</tag>
 	</meta>
-	<url value="http://dsf.dev/fhir/ValueSet/update-allow-list" />
+	<url value="http://dsf.dev/fhir/ValueSet/allow-list" />
 	<!-- version managed by bpe -->
 	<version value="#{version}" />
-	<name value="DSF_Update_Allow_List" />
-	<title value="DSF Update Allow List" />
+	<name value="DSF_Allow_List" />
+	<title value="DSF Allow List" />
 	<!-- status managed by bpe -->
 	<status value="unknown" />
 	<experimental value="false" />
 	<!-- date managed by bpe -->
 	<date value="#{date}" />
 	<publisher value="DSF" />
-	<description value="ValueSet with standard values for the process update allow list" />
+	<description value="ValueSet with standard values for the processes update and download allow list" />
 	<immutable value="true" />
 	<compose>
 		<include>
-			<system value="http://dsf.dev/fhir/CodeSystem/update-allow-list" />
+			<system value="http://dsf.dev/fhir/CodeSystem/allow-list" />
 		</include>
 	</compose>
 </ValueSet> 

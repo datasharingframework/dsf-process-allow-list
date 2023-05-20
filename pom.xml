@@ -6,7 +6,7 @@
 
 	<groupId>dev.dsf</groupId>
 	<artifactId>dsf-process-allow-list</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -14,7 +14,7 @@
 		<compileSource>17</compileSource>
 		<compileTarget>17</compileTarget>
 
-		<dsf.version>1.0.0-SNAPSHOT</dsf.version>
+		<dsf.version>1.0.0-M1</dsf.version>
 		<dsf.location>../dsf</dsf.location>
 	</properties>
 
@@ -39,7 +39,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>dev.dsf</groupId>
-			<artifactId>dsf-bpe-process-base</artifactId>
+			<artifactId>dsf-bpe-process-api-v1</artifactId>
 			<version>${dsf.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -54,7 +54,7 @@
 		<!-- testing -->
 		<dependency>
 			<groupId>dev.dsf</groupId>
-			<artifactId>dsf-bpe-process-base</artifactId>
+			<artifactId>dsf-bpe-process-api-v1</artifactId>
 			<version>${dsf.version}</version>
 			<scope>test</scope>
 			<type>test-jar</type>
@@ -175,9 +175,6 @@
 			<id>github</id>
 			<name>GitHub DSF Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/datasharingframework/dsf</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>

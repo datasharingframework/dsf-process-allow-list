@@ -7,8 +7,10 @@ import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 
 import ca.uhn.fhir.context.FhirContext;
-import dev.dsf.bpe.ConstantsBase;
-import dev.dsf.bpe.ConstantsUpdateAllowList;
+import dev.dsf.bpe.AllowListProcessPluginDefinition;
+import dev.dsf.bpe.ConstantsAllowList;
+import dev.dsf.bpe.v1.constants.CodeSystems;
+import dev.dsf.bpe.v1.constants.NamingSystems;
 
 public class UpdateAllowList3MedicTtpExampleStarter
 {
@@ -24,24 +26,24 @@ public class UpdateAllowList3MedicTtpExampleStarter
 
 	private static Task task()
 	{
+		var def = new AllowListProcessPluginDefinition();
+
 		Task task = new Task();
-		task.getMeta().addProfile(ConstantsUpdateAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_AND_LATEST_VERSION);
-		task.setInstantiatesUri(
-				ConstantsUpdateAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_PROCESS_URI_AND_LATEST_VERSION);
+		task.getMeta()
+				.addProfile(ConstantsAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST + "|" + def.getResourceVersion());
+		task.setInstantiatesCanonical(
+				ConstantsAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_PROCESS_URI + "|" + def.getResourceVersion());
 		task.setStatus(Task.TaskStatus.REQUESTED);
 		task.setIntent(Task.TaskIntent.ORDER);
 		task.setAuthoredOn(new Date());
-		task.getRequester().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER)
-				.setValue(ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_TTP);
-		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER)
-				.setValue(ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_TTP);
+		task.getRequester().setType(ResourceType.Organization.name()).setIdentifier(NamingSystems.OrganizationIdentifier
+				.withValue(ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_TTP));
+		task.getRestriction().addRecipient().setType(ResourceType.Organization.name())
+				.setIdentifier(NamingSystems.OrganizationIdentifier
+						.withValue(ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_TTP));
 
-		task.addInput()
-				.setValue(new StringType(ConstantsUpdateAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_MESSAGE_NAME))
-				.getType().addCoding().setSystem(ConstantsBase.CODESYSTEM_DSF_BPMN)
-				.setCode(ConstantsBase.CODESYSTEM_DSF_BPMN_VALUE_MESSAGE_NAME);
+		task.addInput().setValue(new StringType(ConstantsAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_MESSAGE_NAME))
+				.getType().addCoding(CodeSystems.BpmnMessage.messageName());
 
 		return task;
 	}

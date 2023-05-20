@@ -3,30 +3,32 @@ package dev.dsf.bpe;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Test;
-import org.springframework.core.env.StandardEnvironment;
+import java.util.List;
+import java.util.Map;
 
-import ca.uhn.fhir.context.FhirContext;
-import dev.dsf.fhir.resources.ResourceProvider;
+import org.junit.Test;
+
+import dev.dsf.bpe.v1.ProcessPluginDefinition;
 
 public class UpdateAllowListProcessPluginDefinitionTest
 {
 	@Test
-	public void testResourceLoading() throws Exception
+	public void testResourceLoading()
 	{
-		ProcessPluginDefinition definition = new UpdateAllowListProcessPluginDefinition();
-		ResourceProvider provider = definition.getResourceProvider(FhirContext.forR4(), getClass().getClassLoader(),
-				new StandardEnvironment());
-		assertNotNull(provider);
+		ProcessPluginDefinition definition = new AllowListProcessPluginDefinition();
+		Map<String, List<String>> resourcesByProcessId = definition.getFhirResourcesByProcessId();
 
-		var download = provider.getResources(ConstantsUpdateAllowList.PROCESS_NAME_FULL_DOWNLOAD_ALLOW_LIST + "/"
-				+ UpdateAllowListProcessPluginDefinition.VERSION);
+		var download = resourcesByProcessId.get(ConstantsAllowList.PROCESS_NAME_FULL_DOWNLOAD_ALLOW_LIST);
 		assertNotNull(download);
-		assertEquals(4, download.count());
+		assertEquals(4, download.stream().filter(this::exists).count());
 
-		var update = provider.getResources(ConstantsUpdateAllowList.PROCESS_NAME_FULL_UPDATE_ALLOW_LIST + "/"
-				+ UpdateAllowListProcessPluginDefinition.VERSION);
+		var update = resourcesByProcessId.get(ConstantsAllowList.PROCESS_NAME_FULL_UPDATE_ALLOW_LIST);
 		assertNotNull(update);
-		assertEquals(4, update.count());
+		assertEquals(4, update.stream().filter(this::exists).count());
+	}
+
+	private boolean exists(String file)
+	{
+		return getClass().getClassLoader().getResourceAsStream(file) != null;
 	}
 }

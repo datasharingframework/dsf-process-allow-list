@@ -20,9 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.ValidationResult;
-import dev.dsf.bpe.ConstantsBase;
-import dev.dsf.bpe.ConstantsUpdateAllowList;
-import dev.dsf.bpe.UpdateAllowListProcessPluginDefinition;
+import dev.dsf.bpe.AllowListProcessPluginDefinition;
+import dev.dsf.bpe.ConstantsAllowList;
+import dev.dsf.bpe.v1.constants.CodeSystems;
+import dev.dsf.bpe.v1.constants.NamingSystems;
 import dev.dsf.fhir.validation.ResourceValidator;
 import dev.dsf.fhir.validation.ResourceValidatorImpl;
 import dev.dsf.fhir.validation.ValidationSupportRule;
@@ -31,19 +32,21 @@ public class TaskProfileTest
 {
 	private static final Logger logger = LoggerFactory.getLogger(TaskProfileTest.class);
 
+	private static final AllowListProcessPluginDefinition def = new AllowListProcessPluginDefinition();
+
 	@ClassRule
-	public static final ValidationSupportRule validationRule = new ValidationSupportRule(
-			UpdateAllowListProcessPluginDefinition.VERSION, UpdateAllowListProcessPluginDefinition.RELEASE_DATE,
-			Arrays.asList("dsf-task-base-0.5.0.xml", "dsf-task-update-allow-list.xml",
+	public static final ValidationSupportRule validationRule = new ValidationSupportRule(def.getResourceVersion(),
+			def.getReleaseDate(),
+			Arrays.asList("dsf-task-base-1.0.0.xml", "dsf-task-update-allow-list.xml",
 					"dsf-task-download-allow-list.xml"),
-			Arrays.asList("dsf-read-access-tag-0.5.0.xml", "dsf-bpmn-message-0.5.0.xml", "dsf-update-allow-list.xml"),
-			Arrays.asList("dsf-read-access-tag-0.5.0.xml", "dsf-bpmn-message-0.5.0.xml", "dsf-update-allow-list.xml"));
+			Arrays.asList("dsf-read-access-tag-0.5.0.xml", "dsf-bpmn-message-1.0.0.xml", "dsf-allow-list.xml"),
+			Arrays.asList("dsf-read-access-tag-0.5.0.xml", "dsf-bpmn-message-1.0.0.xml", "dsf-allow-list.xml"));
 
 	private ResourceValidator resourceValidator = new ResourceValidatorImpl(validationRule.getFhirContext(),
 			validationRule.getValidationSupport());
 
 	@Test
-	public void testTaskUpdateAllowListValid() throws Exception
+	public void testTaskUpdateAllowListValid()
 	{
 		Task task = createValidTaskUpdateAllowList();
 
@@ -55,12 +58,12 @@ public class TaskProfileTest
 	}
 
 	@Test
-	public void testTaskUpdateAllowlistValidWithOutput() throws Exception
+	public void testTaskUpdateAllowlistValidWithOutput()
 	{
 		Task task = createValidTaskUpdateAllowList();
 		task.addOutput().setValue(new Reference(new IdType("Bundle", UUID.randomUUID().toString(), "1"))).getType()
-				.addCoding().setSystem(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST)
-				.setCode(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST_VALUE_ALLOW_LIST);
+				.addCoding().setSystem(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST)
+				.setCode(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST);
 
 		ValidationResult result = resourceValidator.validate(task);
 		ValidationSupportRule.logValidationMessages(logger, result);
@@ -72,27 +75,25 @@ public class TaskProfileTest
 	private Task createValidTaskUpdateAllowList()
 	{
 		Task task = new Task();
-		task.getMeta().addProfile(ConstantsUpdateAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST);
-		task.setInstantiatesUri(
-				ConstantsUpdateAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_PROCESS_URI_AND_LATEST_VERSION);
+		task.getMeta().addProfile(ConstantsAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST);
+		task.setInstantiatesCanonical(
+				ConstantsAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_PROCESS_URI + "|" + def.getResourceVersion());
 		task.setStatus(TaskStatus.REQUESTED);
 		task.setIntent(TaskIntent.ORDER);
 		task.setAuthoredOn(new Date());
-		task.getRequester().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER).setValue("TTP");
-		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER).setValue("TTP");
+		task.getRequester().setType(ResourceType.Organization.name())
+				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue("TTP"));
+		task.getRestriction().addRecipient().setType(ResourceType.Organization.name())
+				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue("TTP"));
 
-		task.addInput()
-				.setValue(new StringType(ConstantsUpdateAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_MESSAGE_NAME))
-				.getType().addCoding().setSystem(ConstantsBase.CODESYSTEM_DSF_BPMN)
-				.setCode(ConstantsBase.CODESYSTEM_DSF_BPMN_VALUE_MESSAGE_NAME);
+		task.addInput().setValue(new StringType(ConstantsAllowList.PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_MESSAGE_NAME))
+				.getType().addCoding(CodeSystems.BpmnMessage.messageName());
 
 		return task;
 	}
 
 	@Test
-	public void testTaskDownloadAllowListValid() throws Exception
+	public void testTaskDownloadAllowListValid()
 	{
 		Task task = createValidTaskDownloadAllowList();
 
@@ -106,26 +107,24 @@ public class TaskProfileTest
 	private Task createValidTaskDownloadAllowList()
 	{
 		Task task = new Task();
-		task.getMeta().addProfile(ConstantsUpdateAllowList.PROFILE_DSF_TASK_DOWNLOAD_ALLOW_LIST);
-		task.setInstantiatesUri(
-				ConstantsUpdateAllowList.PROFILE_DSF_TASK_DOWNLOAD_ALLOW_LIST_PROCESS_URI_AND_LATEST_VERSION);
+		task.getMeta().addProfile(ConstantsAllowList.PROFILE_DSF_TASK_DOWNLOAD_ALLOW_LIST);
+		task.setInstantiatesCanonical(
+				ConstantsAllowList.PROFILE_DSF_TASK_DOWNLOAD_ALLOW_LIST_PROCESS_URI + "|" + def.getResourceVersion());
 		task.setStatus(TaskStatus.REQUESTED);
 		task.setIntent(TaskIntent.ORDER);
 		task.setAuthoredOn(new Date());
-		task.getRequester().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER).setValue("MeDIC 1");
-		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(ConstantsBase.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER).setValue("MeDIC 1");
+		task.getRequester().setType(ResourceType.Organization.name())
+				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue("TTP"));
+		task.getRestriction().addRecipient().setType(ResourceType.Organization.name())
+				.setIdentifier(NamingSystems.OrganizationIdentifier.withValue("TTP"));
 
-		task.addInput()
-				.setValue(new StringType(ConstantsUpdateAllowList.PROFILE_DSF_TASK_DOWNLOAD_ALLOW_LIST_MESSAGE_NAME))
-				.getType().addCoding().setSystem(ConstantsBase.CODESYSTEM_DSF_BPMN)
-				.setCode(ConstantsBase.CODESYSTEM_DSF_BPMN_VALUE_MESSAGE_NAME);
+		task.addInput().setValue(new StringType(ConstantsAllowList.PROFILE_DSF_TASK_DOWNLOAD_ALLOW_LIST_MESSAGE_NAME))
+				.getType().addCoding(CodeSystems.BpmnMessage.messageName());
 		task.addInput()
 				.setValue(
 						new Reference(new IdType("https://foo.bar/fhir", "Bundle", UUID.randomUUID().toString(), "1")))
-				.getType().addCoding().setSystem(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST)
-				.setCode(ConstantsUpdateAllowList.CODESYSTEM_DSF_UPDATE_ALLOW_LIST_VALUE_ALLOW_LIST);
+				.getType().addCoding().setSystem(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST)
+				.setCode(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST);
 
 		return task;
 	}
