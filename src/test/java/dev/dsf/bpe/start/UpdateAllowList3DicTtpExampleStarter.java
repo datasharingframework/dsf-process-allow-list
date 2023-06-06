@@ -12,7 +12,7 @@ import dev.dsf.bpe.ConstantsAllowList;
 import dev.dsf.bpe.v1.constants.CodeSystems;
 import dev.dsf.bpe.v1.constants.NamingSystems;
 
-public class UpdateAllowList3MedicTtpExampleStarter
+public class UpdateAllowList3DicTtpExampleStarter
 {
 	// Environment variable "DSF_CLIENT_CERTIFICATE_PATH" or args[0]: the path to the client-certificate
 	// dsf/dsf-tools/dsf-tools-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.p12
