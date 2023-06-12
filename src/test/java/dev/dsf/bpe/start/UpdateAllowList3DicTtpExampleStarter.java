@@ -6,7 +6,6 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 
-import ca.uhn.fhir.context.FhirContext;
 import dev.dsf.bpe.AllowListProcessPluginDefinition;
 import dev.dsf.bpe.ConstantsAllowList;
 import dev.dsf.bpe.v1.constants.CodeSystems;
@@ -20,7 +19,6 @@ public class UpdateAllowList3DicTtpExampleStarter
 	// password
 	public static void main(String[] args) throws Exception
 	{
-		System.out.println(FhirContext.forR4().newXmlParser().encodeResourceToString(task()));
 		ExampleStarter.forServer(args, ConstantsExampleStarters.TTP_FHIR_BASE_URL).startWith(task());
 	}
 

@@ -54,9 +54,13 @@ public class AllowListProcessPluginDefinition implements ProcessPluginDefinition
 		var sDown = "fhir/StructureDefinition/dsf-task-download-allow-list.xml";
 		var sUp = "fhir/StructureDefinition/dsf-task-update-allow-list.xml";
 
+		var tDown = "fhir/Task/dsf-task-download-allow-list.xml";
+		var tUp = "fhir/Task/dsf-task-update-allow-list.xml";
+
 		var v = "fhir/ValueSet/dsf-allow-list.xml";
 
-		return Map.of(ConstantsAllowList.PROCESS_NAME_FULL_DOWNLOAD_ALLOW_LIST, Arrays.asList(c, aDown, sDown, v),
-				ConstantsAllowList.PROCESS_NAME_FULL_UPDATE_ALLOW_LIST, Arrays.asList(c, aUp, sUp, v));
+		return Map.of(ConstantsAllowList.PROCESS_NAME_FULL_DOWNLOAD_ALLOW_LIST,
+				Arrays.asList(c, aDown, sDown, tDown, v), ConstantsAllowList.PROCESS_NAME_FULL_UPDATE_ALLOW_LIST,
+				Arrays.asList(c, aUp, sUp, tUp, v));
 	}
 }
