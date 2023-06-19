@@ -50,7 +50,7 @@ public class ActivityDefinitionProfileTest
 	public void testDownloadAllowListValid() throws Exception
 	{
 		ActivityDefinition ad = validationRule.readActivityDefinition(
-				Paths.get("src/main/resources/fhir/ActivityDefinition/dsf-downloadAllowList.xml"));
+				Paths.get("src/main/resources/fhir/ActivityDefinition/dsf-download-allow-list.xml"));
 
 		ValidationResult result = resourceValidator.validate(ad);
 		ValidationSupportRule.logValidationMessages(logger, result);
@@ -65,7 +65,7 @@ public class ActivityDefinitionProfileTest
 	public void testUpdateAllowListValid() throws Exception
 	{
 		ActivityDefinition ad = validationRule.readActivityDefinition(
-				Paths.get("src/main/resources/fhir/ActivityDefinition/dsf-updateAllowList.xml"));
+				Paths.get("src/main/resources/fhir/ActivityDefinition/dsf-update-allow-list.xml"));
 
 		ValidationResult result = resourceValidator.validate(ad);
 		ValidationSupportRule.logValidationMessages(logger, result);
