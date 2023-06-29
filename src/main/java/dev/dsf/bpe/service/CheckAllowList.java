@@ -54,7 +54,7 @@ public class CheckAllowList extends AbstractServiceDelegate
 			logger.error("Expected Bundle with id '{}' containing only resource types Organization, "
 					+ "OrganizationAffiliation or Endpoint and request methods PUT or DELETE, but found different "
 					+ "types or methods.", bundleUrl);
-			throw new RuntimeException("Expected Bundle with id '" + bundleUrl + "'containing only resource "
+			throw new RuntimeException("Expected Bundle with id '" + bundleUrl + " 'containing only resource "
 					+ "types Organization, OrganizationAffiliation or Endpoint and "
 					+ "request methods PUT or DELETE, but found different types or methods.");
 		}
