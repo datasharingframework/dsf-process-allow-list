@@ -20,11 +20,11 @@ public class UpdateAllowListProcessPluginDefinitionTest
 
 		var download = resourcesByProcessId.get(ConstantsAllowList.PROCESS_NAME_FULL_DOWNLOAD_ALLOW_LIST);
 		assertNotNull(download);
-		assertEquals(4, download.stream().filter(this::exists).count());
+		assertEquals(5, download.stream().filter(this::exists).count());
 
 		var update = resourcesByProcessId.get(ConstantsAllowList.PROCESS_NAME_FULL_UPDATE_ALLOW_LIST);
 		assertNotNull(update);
-		assertEquals(4, update.stream().filter(this::exists).count());
+		assertEquals(5, update.stream().filter(this::exists).count());
 	}
 
 	private boolean exists(String file)

@@ -19,18 +19,18 @@ import dev.dsf.bpe.v1.constants.CodeSystems;
 import dev.dsf.bpe.v1.constants.NamingSystems;
 import dev.dsf.fhir.client.FhirWebserviceClient;
 
-public class DownloadAllowListFromTtpViaMedic1ExampleStarter
+public class DownloadAllowListFromTtpExampleStarter
 {
-	private static final Logger logger = LoggerFactory.getLogger(DownloadAllowListFromTtpViaMedic1ExampleStarter.class);
+	private static final Logger logger = LoggerFactory.getLogger(DownloadAllowListFromTtpExampleStarter.class);
 
 	private static final String ALLOW_LIST_FHIR_BASE_URL = ConstantsExampleStarters.TTP_FHIR_BASE_URL;
-	private static final Map<String, String> MEDIC_IDENTIFIER_URL = Map.of(
-			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_1,
-			ConstantsExampleStarters.MEDIC_1_FHIR_BASE_URL,
-			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_2,
-			ConstantsExampleStarters.MEDIC_2_FHIR_BASE_URL,
-			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_MEDIC_3,
-			ConstantsExampleStarters.MEDIC_3_FHIR_BASE_URL);
+	private static final Map<String, String> DIC_IDENTIFIER_URL = Map.of(
+			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_DIC_1,
+			ConstantsExampleStarters.DIC_1_FHIR_BASE_URL,
+			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_DIC_2,
+			ConstantsExampleStarters.DIC_2_FHIR_BASE_URL,
+			ConstantsExampleStarters.NAMINGSYSTEM_DSF_ORGANIZATION_IDENTIFIER_VALUE_DIC_3,
+			ConstantsExampleStarters.DIC_3_FHIR_BASE_URL);
 
 	// Environment variable "DSF_CLIENT_CERTIFICATE_PATH" or args[0]: the path to the client-certificate
 	// dsf/dsf-tools/dsf-tools-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.p12
@@ -39,10 +39,10 @@ public class DownloadAllowListFromTtpViaMedic1ExampleStarter
 	public static void main(String[] args) throws Exception
 	{
 		ExampleStarter starter = ExampleStarter.forServer(args,
-				MEDIC_IDENTIFIER_URL.entrySet().iterator().next().getValue());
+				DIC_IDENTIFIER_URL.entrySet().iterator().next().getValue());
 		IdType allowList = allowList(starter);
 
-		MEDIC_IDENTIFIER_URL.forEach((identifier, url) -> start(args, allowList, identifier, url));
+		DIC_IDENTIFIER_URL.forEach((identifier, url) -> start(args, allowList, identifier, url));
 	}
 
 	private static void start(String[] args, IdType allowList, String identifier, String url)

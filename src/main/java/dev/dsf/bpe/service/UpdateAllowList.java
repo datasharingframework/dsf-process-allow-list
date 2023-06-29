@@ -85,7 +85,9 @@ public class UpdateAllowList extends AbstractServiceDelegate
 						+ ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST)));
 
 		Task task = variables.getStartTask();
-		task.addOutput().setValue(new Reference(new IdType("Bundle", result.getIdPart(), result.getVersionIdPart())))
+		task.addOutput()
+				.setValue(new Reference(new IdType(api.getEndpointProvider().getLocalEndpointAddress(), "Bundle",
+						result.getIdPart(), result.getVersionIdPart())))
 				.getType().addCoding().setSystem(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST)
 				.setCode(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST);
 	}

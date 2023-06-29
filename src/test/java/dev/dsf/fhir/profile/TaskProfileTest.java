@@ -39,8 +39,8 @@ public class TaskProfileTest
 			def.getReleaseDate(),
 			Arrays.asList("dsf-task-base-1.0.0.xml", "dsf-task-update-allow-list.xml",
 					"dsf-task-download-allow-list.xml"),
-			Arrays.asList("dsf-read-access-tag-0.5.0.xml", "dsf-bpmn-message-1.0.0.xml", "dsf-allow-list.xml"),
-			Arrays.asList("dsf-read-access-tag-0.5.0.xml", "dsf-bpmn-message-1.0.0.xml", "dsf-allow-list.xml"));
+			Arrays.asList("dsf-read-access-tag-1.0.0.xml", "dsf-bpmn-message-1.0.0.xml", "dsf-allow-list.xml"),
+			Arrays.asList("dsf-read-access-tag-1.0.0.xml", "dsf-bpmn-message-1.0.0.xml", "dsf-allow-list.xml"));
 
 	private ResourceValidator resourceValidator = new ResourceValidatorImpl(validationRule.getFhirContext(),
 			validationRule.getValidationSupport());
