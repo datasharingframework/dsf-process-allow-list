@@ -1,0 +1,81 @@
+<ActivityDefinition xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://dsf.dev/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization">
+		<extension url="message-name">
+			<valueString value="updateAllowListMessage" />
+		</extension>
+		<extension url="task-profile">
+			<valueCanonical value="http://dsf.dev/fhir/StructureDefinition/task-update-allow-list|#{version}" />
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization-organization">
+					<valueIdentifier>
+						<system value="http://dsf.dev/sid/organization-identifier" />
+						<value value="${dev.dsf.bpe.allow.list.organization:hs-heilbronn.de}" />
+					</valueIdentifier>
+				</extension>
+				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ORGANIZATION" />
+			</valueCoding>
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization-organization-practitioner">
+					<extension url="organization">
+						<valueIdentifier>
+							<system value="http://dsf.dev/sid/organization-identifier" />
+							<value value="${dev.dsf.bpe.allow.list.organization:hs-heilbronn.de}" />
+						</valueIdentifier>
+					</extension>
+					<extension url="practitioner-role">
+						<valueCoding>
+							<system value="http://dsf.dev/fhir/CodeSystem/practitioner-role" />
+							<code value="DSF_ADMIN" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ORGANIZATION_PRACTITIONER" />
+			</valueCoding>
+		</extension>
+		<extension url="recipient">
+			<valueCoding>
+				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization-organization">
+					<valueIdentifier>
+						<system value="http://dsf.dev/sid/organization-identifier" />
+						<value value="${dev.dsf.bpe.allow.list.organization:hs-heilbronn.de}" />
+					</valueIdentifier>
+				</extension>
+				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ORGANIZATION" />
+			</valueCoding>
+		</extension>
+	</extension>
+	<url value="http://dsf.dev/bpe/Process/updateAllowList" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="UpdateAllowList" />
+	<title value="Update Allow List" />
+	<subtitle value="Update Allow List Bundle Process" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="DSF" />
+	<contact>
+		<name value="DSF" />
+		<telecom>
+			<system value="email" />
+			<value value="pmo@dsf.dev" />
+		</telecom>
+	</contact>
+	<description value="Process to update the allow list FHIR bundle" />
+	<kind value="Task" />
+</ActivityDefinition>

@@ -7,42 +7,42 @@
 	</meta>
 	<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization">
 		<extension url="message-name">
-			<valueString value="updateAllowListMessage" />
+			<valueString value="downloadAllowListMessage" />
 		</extension>
 		<extension url="task-profile">
-			<valueCanonical value="http://dsf.dev/fhir/StructureDefinition/task-update-allow-list|#{version}" />
+			<valueCanonical value="http://dsf.dev/fhir/StructureDefinition/task-download-allow-list|#{version}" />
 		</extension>
 		<extension url="requester">
 			<valueCoding>
-				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization-organization">
-					<valueIdentifier>
-						<system value="http://dsf.dev/sid/organization-identifier" />
-						<value value="${dev.dsf.bpe.allow.list.organization:hs-heilbronn.de}" />
-					</valueIdentifier>
+				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ALL" />
+			</valueCoding>
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization-practitioner">
+					<valueCoding>
+						<system value="http://dsf.dev/fhir/CodeSystem/practitioner-role" />
+						<code value="DSF_ADMIN" />
+					</valueCoding>
 				</extension>
 				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
-				<code value="LOCAL_ORGANIZATION" />
+				<code value="LOCAL_ALL_PRACTITIONER" />
 			</valueCoding>
 		</extension>
 		<extension url="recipient">
 			<valueCoding>
-				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization-organization">
-					<valueIdentifier>
-						<system value="http://dsf.dev/sid/organization-identifier" />
-						<value value="${dev.dsf.bpe.allow.list.organization:hs-heilbronn.de}" />
-					</valueIdentifier>
-				</extension>
 				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
-				<code value="LOCAL_ORGANIZATION" />
+				<code value="LOCAL_ALL" />
 			</valueCoding>
 		</extension>
 	</extension>
-	<url value="http://dsf.dev/bpe/Process/updateAllowList" />
+	<url value="http://dsf.dev/bpe/Process/downloadAllowList" />
 	<!-- version managed by bpe -->
 	<version value="#{version}" />
-	<name value="UpdateAllowList" />
-	<title value="Update Allow List" />
-	<subtitle value="Update Allow List Bundle Process" />
+	<name value="DownloadAllowList" />
+	<title value="Download Allow List" />
+	<subtitle value="Download Allow List Bundle Process" />
 	<!-- status managed by bpe -->
 	<status value="unknown" />
 	<experimental value="false" />
@@ -56,6 +56,6 @@
 			<value value="pmo@dsf.dev" />
 		</telecom>
 	</contact>
-	<description value="Process to update the allow list FHIR bundle" />
+	<description value="Process to download the allow list FHIR bundle" />
 	<kind value="Task" />
 </ActivityDefinition>
