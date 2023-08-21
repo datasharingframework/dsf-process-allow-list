@@ -33,6 +33,6 @@
 				<code value="message-name" />
 			</coding>
 		</type>
-		<valueString value="updateAllowListMessage" />
+		<valueString value="updateAllowList" />
 	</input>
 </Task>

@@ -19,7 +19,7 @@ public interface ConstantsAllowList
 
 	String PROFILE_DSF_TASK_UPDATE_ALLOW_LIST = "http://dsf.dev/fhir/StructureDefinition/task-update-allow-list";
 	String PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_PROCESS_URI = PROCESS_DSF_URI_BASE + PROCESS_NAME_UPDATE_ALLOW_LIST;
-	String PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_MESSAGE_NAME = "updateAllowListMessage";
+	String PROFILE_DSF_TASK_UPDATE_ALLOW_LIST_MESSAGE_NAME = "updateAllowList";
 
 	String BPMN_EXECUTION_VARIABLE_BUNDLE = "bundle";
 	String BPMN_EXECUTION_VARIABLE_BUNDLE_URL = "bundleUrl";

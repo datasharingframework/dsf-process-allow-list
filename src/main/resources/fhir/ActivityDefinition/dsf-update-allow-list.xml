@@ -7,7 +7,7 @@
 	</meta>
 	<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization">
 		<extension url="message-name">
-			<valueString value="updateAllowListMessage" />
+			<valueString value="updateAllowList" />
 		</extension>
 		<extension url="task-profile">
 			<valueCanonical value="http://dsf.dev/fhir/StructureDefinition/task-update-allow-list|#{version}" />
