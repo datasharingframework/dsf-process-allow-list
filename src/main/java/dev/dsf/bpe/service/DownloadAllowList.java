@@ -48,10 +48,11 @@ public class DownloadAllowList extends AbstractServiceDelegate
 		}
 		catch (WebApplicationException e)
 		{
-			logger.error("Error while reading Bundle with id '{}' from organization {}: {}", bundleId.getValue(),
-					task.getRequester().getReference(), e.getMessage());
+			logger.error("Error while reading Bundle with id '{}' from organization {}: {} - {}", bundleId.getValue(),
+					task.getRequester().getIdentifier().getValue(), e.getResponse().getStatusInfo(), e.getMessage());
 			throw new RuntimeException("Error while reading Bundle with id '" + bundleId.getValue()
-					+ "' from organization " + task.getRequester().getReference() + ": " + e.getMessage(), e);
+					+ "' from organization " + task.getRequester().getIdentifier().getValue() + ": "
+					+ e.getResponse().getStatusInfo() + " - " + e.getMessage(), e);
 		}
 	}
 
