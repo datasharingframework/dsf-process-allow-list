@@ -7,7 +7,7 @@
 	</meta>
 	<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization">
 		<extension url="message-name">
-			<valueString value="updateAllowListMessage" />
+			<valueString value="updateAllowList" />
 		</extension>
 		<extension url="task-profile">
 			<valueCanonical value="http://dsf.dev/fhir/StructureDefinition/task-update-allow-list|#{version}" />
@@ -22,6 +22,26 @@
 				</extension>
 				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
 				<code value="LOCAL_ORGANIZATION" />
+			</valueCoding>
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://dsf.dev/fhir/StructureDefinition/extension-process-authorization-organization-practitioner">
+					<extension url="organization">
+						<valueIdentifier>
+							<system value="http://dsf.dev/sid/organization-identifier" />
+							<value value="${dev.dsf.bpe.allow.list.organization:hs-heilbronn.de}" />
+						</valueIdentifier>
+					</extension>
+					<extension url="practitioner-role">
+						<valueCoding>
+							<system value="http://dsf.dev/fhir/CodeSystem/practitioner-role" />
+							<code value="DSF_ADMIN" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://dsf.dev/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ORGANIZATION_PRACTITIONER" />
 			</valueCoding>
 		</extension>
 		<extension url="recipient">

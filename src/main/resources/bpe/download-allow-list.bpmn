@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1yb5vw3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
+  <bpmn:process id="dsfdev_downloadAllowList" isExecutable="true" camunda:versionTag="#{version}">
+    <bpmn:sequenceFlow id="SequenceFlow_0bbhq2r" sourceRef="StartEvent_1" targetRef="downloadAllowListTask" />
+    <bpmn:endEvent id="EndEvent_0xd0x8k">
+      <bpmn:incoming>Flow_0g4jed4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0oyvmcd" sourceRef="downloadAllowListTask" targetRef="checkAllowListTask" />
+    <bpmn:serviceTask id="downloadAllowListTask" name="downloadAllowList" camunda:class="dev.dsf.bpe.service.DownloadAllowList">
+      <bpmn:incoming>SequenceFlow_0bbhq2r</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0oyvmcd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0bbhq2r</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1nn2wdw" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0kev1xq" sourceRef="checkAllowListTask" targetRef="insertAllowListTask" />
+    <bpmn:sequenceFlow id="Flow_0g4jed4" sourceRef="insertAllowListTask" targetRef="EndEvent_0xd0x8k" />
+    <bpmn:serviceTask id="checkAllowListTask" name="checkAllowList" camunda:class="dev.dsf.bpe.service.CheckAllowList">
+      <bpmn:incoming>SequenceFlow_0oyvmcd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kev1xq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="insertAllowListTask" name="insertAllowList" camunda:class="dev.dsf.bpe.service.InsertAllowList">
+      <bpmn:incoming>Flow_0kev1xq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g4jed4</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_1nn2wdw" name="downloadAllowListMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="dsfdev_downloadAllowList">
+      <bpmndi:BPMNEdge id="SequenceFlow_0oyvmcd_di" bpmnElement="SequenceFlow_0oyvmcd">
+        <di:waypoint x="365" y="121" />
+        <di:waypoint x="430" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0bbhq2r_di" bpmnElement="SequenceFlow_0bbhq2r">
+        <di:waypoint x="215" y="121" />
+        <di:waypoint x="265" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kev1xq_di" bpmnElement="Flow_0kev1xq">
+        <di:waypoint x="530" y="121" />
+        <di:waypoint x="590" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g4jed4_di" bpmnElement="Flow_0g4jed4">
+        <di:waypoint x="690" y="121" />
+        <di:waypoint x="742" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0um3ad2_di" bpmnElement="downloadAllowListTask">
+        <dc:Bounds x="265" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0x5gijn_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0xd0x8k_di" bpmnElement="EndEvent_0xd0x8k">
+        <dc:Bounds x="742" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lr62lt_di" bpmnElement="checkAllowListTask">
+        <dc:Bounds x="430" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bpyxjl_di" bpmnElement="insertAllowListTask">
+        <dc:Bounds x="590" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

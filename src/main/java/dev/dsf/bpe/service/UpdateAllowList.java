@@ -85,7 +85,9 @@ public class UpdateAllowList extends AbstractServiceDelegate
 						+ ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST)));
 
 		Task task = variables.getStartTask();
-		task.addOutput().setValue(new Reference(new IdType("Bundle", result.getIdPart(), result.getVersionIdPart())))
+		task.addOutput()
+				.setValue(new Reference(new IdType(api.getEndpointProvider().getLocalEndpointAddress(), "Bundle",
+						result.getIdPart(), result.getVersionIdPart())))
 				.getType().addCoding().setSystem(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST)
 				.setCode(ConstantsAllowList.CODESYSTEM_DSF_ALLOW_LIST_VALUE_ALLOW_LIST);
 	}
@@ -210,14 +212,18 @@ public class UpdateAllowList extends AbstractServiceDelegate
 		else
 			throw new IllegalStateException("OrganizationAffiliation with participating organization expected");
 
+		String endpointIdentifier;
 		if (affiliation.hasEndpoint())
 		{
-			List<Reference> endpoints = affiliation.getEndpoint().stream()
-					.map(e -> tempIdsByTypeAndId.get(e.getReference()))
-					.map(tempId -> new Reference().setType("Endpoint").setReference(tempId))
-					.collect(Collectors.toList());
-			affiliation.setEndpoint(endpoints);
+			String ref = affiliation.getEndpointFirstRep().getReference();
+			endpointIdentifier = identifierByTypeAndId.get(ref);
+			String endpointTempId = tempIdsByTypeAndId.get(ref);
+
+			affiliation.setEndpoint(
+					Collections.singletonList(new Reference().setType("Endpoint").setReference(endpointTempId)));
 		}
+		else
+			throw new IllegalStateException("OrganizationAffiliation with endpoint expected");
 
 		BundleEntryComponent entry = new BundleEntryComponent();
 		entry.setFullUrl(uuid);
@@ -226,7 +232,8 @@ public class UpdateAllowList extends AbstractServiceDelegate
 				.setUrl("OrganizationAffiliation?primary-organization:identifier="
 						+ NamingSystems.OrganizationIdentifier.SID + "|" + primaryOrganizatioIdentifier
 						+ "&participating-organization:identifier=" + NamingSystems.OrganizationIdentifier.SID + "|"
-						+ participatingOrganizationIdentifier);
+						+ participatingOrganizationIdentifier + "&endpoint:identifier="
+						+ NamingSystems.EndpointIdentifier.SID + "|" + endpointIdentifier);
 		return entry;
 	}
 }

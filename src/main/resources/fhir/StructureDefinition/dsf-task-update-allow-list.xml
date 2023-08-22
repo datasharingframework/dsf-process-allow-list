@@ -41,7 +41,7 @@
     </element>
     <element id="Task.input:message-name.value[x]">
       <path value="Task.input.value[x]" />
-      <fixedString value="updateAllowListMessage" />
+      <fixedString value="updateAllowList" />
     </element>
     <element id="Task.input:correlation-key">
       <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
