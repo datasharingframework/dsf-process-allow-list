@@ -16,7 +16,7 @@ import dev.dsf.bpe.v1.ProcessPluginApi;
 public class AllowListConfig
 {
 	@Autowired
-	ProcessPluginApi api;
+	private ProcessPluginApi api;
 
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
