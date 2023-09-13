@@ -11,6 +11,7 @@ import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.OrganizationAffiliation;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
@@ -76,10 +77,17 @@ public class CheckAllowList extends AbstractServiceDelegate
 	private boolean resourceNotAllowedWithError(BundleEntryComponent entry, Task task, String bundleUrl)
 	{
 		Resource resource = entry.getResource();
-		boolean resourceAllowed = (resource instanceof Organization || resource instanceof OrganizationAffiliation
-				|| resource instanceof Endpoint);
+		boolean resourceAllowed = (HTTPVerb.DELETE.equals(entry.getRequest().getMethod())
+				&& (entry.getRequest().getUrl().startsWith(ResourceType.Organization.name())
+						|| entry.getRequest().getUrl().startsWith(ResourceType.OrganizationAffiliation.name())
+						|| entry.getRequest().getUrl().startsWith(ResourceType.Endpoint.name())))
+				|| (resource instanceof Organization || resource instanceof OrganizationAffiliation
+						|| resource instanceof Endpoint);
 
-		if (!resourceAllowed)
+		if (HTTPVerb.DELETE.equals(entry.getRequest().getMethod()) && !resourceAllowed)
+			addError(task, "Resource delete of '" + entry.getRequest().getUrl() + "' not allowed in Bundle with id '"
+					+ bundleUrl + "'");
+		else if (!HTTPVerb.DELETE.equals(entry.getRequest().getMethod()) && !resourceAllowed)
 			addError(task, "Resource of type '" + resource.getResourceType().name()
 					+ "' not allowed in Bundle with id '" + bundleUrl + "'");
 
